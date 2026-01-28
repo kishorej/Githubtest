@@ -1,0 +1,75 @@
+name: Issue Event Handler
+
+on:
+  issues:
+    types: [opened, edited, closed, reopened, assigned, unassigned, labeled, unlabeled]
+
+jobs:
+  handle-issue:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Output Issue Event Details
+      shell: bash
+      run: |
+        echo "===== ISSUE EVENT DETAILS ====="
+        echo ""
+        echo "Event Action: ${{ github.event.action }}"
+        echo "Issue Number: ${{ github.event.issue.number }}"
+        echo "Issue Title: ${{ github.event.issue.title }}"
+        echo "Issue State: ${{ github.event.issue.state }}"
+        echo "Issue URL: ${{ github.event.issue.html_url }}"
+        echo ""
+        echo "===== AUTHOR INFORMATION ====="
+        echo "Author: ${{ github.event.issue.user.login }}"
+        echo "Author ID: ${{ github.event.issue.user.id }}"
+        echo "Author Avatar: ${{ github.event.issue.user.avatar_url }}"
+        echo ""
+        echo "===== ISSUE BODY ====="
+        echo "${{ github.event.issue.body }}"
+        echo ""
+        echo "===== TIMESTAMPS ====="
+        echo "Created At: ${{ github.event.issue.created_at }}"
+        echo "Updated At: ${{ github.event.issue.updated_at }}"
+        echo "Closed At: ${{ github.event.issue.closed_at }}"
+        echo ""
+        echo "===== REPOSITORY INFORMATION ====="
+        echo "Repository: ${{ github.repository }}"
+        echo "Repository Owner: ${{ github.repository_owner }}"
+        echo "Ref: ${{ github.ref }}"
+        echo "SHA: ${{ github.sha }}"
+        echo ""
+        echo "===== ACTOR INFORMATION ====="
+        echo "Actor (User Running Workflow): ${{ github.actor }}"
+        echo ""
+        echo "===== LABELS ====="
+        echo "Labels: ${{ join(github.event.issue.labels.*.name, ', ') }}"
+        echo ""
+        echo "===== ASSIGNEES ====="
+        echo "Assignees: ${{ join(github.event.issue.assignees.*.login, ', ') }}"
+        echo ""
+        echo "===== MILESTONE ====="
+        echo "Milestone: ${{ github.event.issue.milestone.title }}"
+        echo ""
+        echo "===== REACTIONS ====="
+        echo "Thumbs Up: ${{ github.event.issue.reactions.'+1' }}"
+        echo "Thumbs Down: ${{ github.event.issue.reactions.'-1' }}"
+        echo "Laugh: ${{ github.event.issue.reactions.laugh }}"
+        echo "Confused: ${{ github.event.issue.reactions.confused }}"
+        echo "Heart: ${{ github.event.issue.reactions.heart }}"
+        echo ""
+        echo "===== WORKFLOW CONTEXT ====="
+        echo "Workflow: ${{ github.workflow }}"
+        echo "Workflow Run ID: ${{ github.run_id }}"
+        echo "Workflow Run Number: ${{ github.run_number }}"
+        echo "Job: ${{ github.job }}"
+        echo ""
+    
+    - name: Log Full GitHub Context
+      shell: bash
+      run: |
+        echo "===== FULL GITHUB CONTEXT (JSON) ====="
+        echo '${{ toJSON(github) }}' | jq .
